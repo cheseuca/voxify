@@ -10,27 +10,21 @@ let voices = [];
 
 function populateVoices() {
     voices = speechSynthesis.getVoices();
-    
-    const uniqueVoices = new Set();
-    
-    voices.forEach(voice => {
-        if (!uniqueVoices.has(voice.name)) {
-            const option = document.createElement("option");
-            option.setAttribute("value", voice.name);
-            option.textContent = voice.name;
-            voiceDropdown.appendChild(option);
-            
-            uniqueVoices.add(voice.name);
-        }
-    });
+
+    for(let index = 0; index < voices.length; index++) {
+        const option = document.createElement("option");
+        option.setAttribute("value", index);
+        option.textContent = voices[index].name;
+
+        voiceDropdown.appendChild(option);
+    }
+
+    setVoice();
 }
 
 function setVoice() {
-  for(let index = 0; index < voices.length; index++) {
-    if(voices[index].name === voiceDropdown.value) {
-      message.voice = voices[index];
-    }
-  }
+    const selectedVoiceIndex = voiceDropdown.value;
+    message.voice = voices[selectedVoiceIndex];
 }
 
 function setRate() {
@@ -54,10 +48,9 @@ function speakVoices() {
 }
 
 speechSynthesis.addEventListener("voiceschanged", populateVoices);
-rateInput.addEventListener("change", setRate);
-pitchInput.addEventListener("change", setPitch);
-textarea.addEventListener("change", setText);
+rateInput.addEventListener("input", setRate);
+pitchInput.addEventListener("input", setPitch);
+textarea.addEventListener("input", setText);
+voiceDropdown.addEventListener("change", setVoice);
 stopButton.addEventListener("click", stopSpeak);
 speakButton.addEventListener("click", speakVoices);
-
-populateVoices();
